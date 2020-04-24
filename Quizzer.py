@@ -90,6 +90,15 @@ item_image.convert_alpha()
 item_image = pygame.transform.smoothscale(item_image,(int(item_width),int(item_height)))
 item_position = item_image.get_rect()
 
+
+#Load item_selected image
+item_selected_image = pygame.image.load('item_selected.png')
+item_selected_image.convert_alpha()
+item_selected_image = pygame.transform.smoothscale(item_selected_image,(int(item_width),int(item_height)))
+item_selected_position = item_selected_image.get_rect()
+
+
+
 #Define box class
 class Box():
     def __init__(self, text, box_image, text_position_x, text_position_y):
@@ -119,6 +128,7 @@ class Item():
         
         self.font = pygame.font.Font(None, item_font_value)
         self.text_image = self.font.render(text, True, original_color)
+        
         self.item_image = item_image 
 
         
@@ -138,6 +148,9 @@ class Item():
         self.text_position.center = position
         self.item_image_position.center = position
 
+    def refresh_picture(self,new_item_image):
+        self.item_image = new_item_image 
+        
     def refresh_color(self):
         if self.selected == 0:
             if self.correct == -1:
@@ -146,7 +159,9 @@ class Item():
                 self.text_image = self.font.render(self.text, True, wrong_color)           
             if self.correct == 1:
                 self.text_image = self.font.render(self.text, True, correct_color)
-
+        if self.selected == 1:
+            self.text_image = self.font.render(self.text, True, original_color)
+        
 
 
 #Creating new boxes and adding them to the list
@@ -203,6 +218,7 @@ while True:
                 item_index = item_objects.index(item_object)
                 if item_object.item_image_position.collidepoint(mouse_position):
                     item_object.selected = 1
+                    item_object.refresh_picture(item_selected_image)
                     item_objects[item_index] = item_object
                     break
 
@@ -213,6 +229,7 @@ while True:
                 if item_object.selected == 1:
                     #item_object.moveto(mouse_position)
                     item_object.selected = 0
+                    item_object.refresh_picture(item_image)
                     item_objects[item_index] = item_object
 
     #Move selected item objects
@@ -228,7 +245,7 @@ while True:
     for item_object in item_objects:
         item_index = item_objects.index(item_object)
 
-        
+
 
         item_object.collided = 0
 
